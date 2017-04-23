@@ -1,0 +1,11 @@
+{
+  "name": "test-purify-css",
+  "version": "0.0.1",
+  "description": "Test the fact of purifying css",
+  "author": "Damien Hanoun",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-purifycss": "^0.2.0"
+  }
+}

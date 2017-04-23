@@ -1,0 +1,209 @@
+<script type="text/javascript">
+	((Assert) => {
+		let ScopeTestSuite = [
+			globalVariableIsGlobalObjectProperty = _ => {
+				mySpecificProperty = "property that will go in global object";
+				Assert.areEquals(mySpecificProperty, window.mySpecificProperty);
+				mySpecificProperty=undefined;
+			},
+			varIsNotGlobalObjectProperty = _ => {
+				var mySpecificProperty = "property that will not go in global object";
+				Assert.dontExist(window.mySpecificProperty);
+				//that's not true if you are at the first level of the javascript tag
+			},
+			letIsNotGlobalObjectProperty = _ => {
+				let mySpecificProperty = "property that will not go in window";
+				Assert.dontExist(window.mySpecificProperty);
+			},
+			variableAccessibleFromAutoCalledFunction = _ => {
+				let takeMe = "I am accessible";
+				(_=>{
+					Assert.areEquals(takeMe, "I am accessible");
+				})();
+			},
+			variableInaccessibleFromAutoCalledFunction = _ => {
+				(_=>{
+					let leaveMeAlone = "I am not accessible";
+				})();
+				(_=>{
+					Assert.throwException(_=>leaveMeAlone);
+				})();
+			},
+			thisIsGlobalObject = _ => {
+				Assert.areEquals(this, window);
+			},
+			thisInFunctionIsGlobalObject = _ => {
+				let func = function(){
+					return this;
+				};
+				Assert.areEquals(func(), window);
+			},
+			thisInObjectIsGlobalObject = _ => {
+				let object = {
+					notMe : this
+				};
+				Assert.areEquals(object.notMe, window);
+			},
+			thisInTableIsGlobalObject = _ => {
+				let table = [this];
+				Assert.areEquals(table[0],window);
+			},
+			thisInInstanciateObjectIsItSelf = _ => {
+				let object = function(){
+					this.something = 'something';
+				};
+				Assert.areEquals(new object().something, 'something');
+			},
+			thisInArrowFunctionPassedAsParameterIsGlobalObject = _ => {
+				let aClass = function(){
+					this.func = function(funcParameter){
+						funcParameter.call(this);
+					};
+				};
+				let object = new aClass();
+				object.func(_ => {
+					Assert.areEquals(this, window);
+				});
+			},
+			thisInFunctionPassedAsParameterIsObject = _ => {
+				let aClass = function(){
+					this.func = function(funcParameter){
+						funcParameter.call(this);
+					}
+				};
+				let object = new aClass();
+				object.func(function(){
+					Assert.areEquals(this, object);
+				});
+			},
+			thisInFunctionInObjectIsTheObject = _ => {
+				let object = {
+				  i: 10,
+				  func: function() {
+				    Assert.areEquals(this.i, 10);
+				  }
+				};
+				object.func();
+			},
+			thisInArrowFunctionInObjectIsGlobalObject = _ => {
+				let object = {
+				  func: _ => {
+				    Assert.areEquals(this, window);
+				  }
+				};
+				object.func();
+			},
+			varIsNotAccessibleOuterFunction = _ => {
+				function func(){
+					var innerVariable = "I am inner the function";
+				}
+				Assert.throwException(_=>innerVariable);
+			},
+			varInForIsAccessibleOuterFor = _ => {
+				for(var i in [1,2]);
+				Assert.areEquals(i,"1");
+			},
+			varInForIsAccessibleOuterFor = _ => {
+				for(var i in [1,2]){
+					var j = i;
+				}
+				Assert.areEquals(j,"1");
+			},
+			letInForIsNotAccessibleOuterFor = _ => {
+				for(let i in [1,2]);
+				Assert.throwException(_=>i);
+			},
+			letInForIsNotAccessibleOuterFor = _ => {
+				for(let i in [1,2]){
+					let j = i;
+				}
+				Assert.throwException(_=>j);
+			},
+			returnWithNothingBehindReturnUndefined = _ => {
+				let func = _ => {
+					return
+					{};
+				};
+				Assert.areEquals(func(),undefined);
+			},
+			anonymousFunctionDoesntExistBeforeItsDefinition= _ => {
+				Assert.throwException(_=>func());
+				let func = _=>{};
+			},
+			namedFunctionCanBeCalledBeforeItsDefinition = _ => {
+				Assert.exist(func);
+				function func(){};
+			},
+			functionDoesntExistIfConditionIsFalse = _ => {
+				if(false)
+					function func(){};
+				Assert.throwException(_=>func());
+			},
+			functionInBlocWithSameNameThanAntoherWin = _ => {
+				function func (){return "function";}
+				{
+					function func() {return "inner bloc function"}
+				};
+				Assert.areEquals(func(), "inner bloc function");
+			},
+			functionInBlocWithSameNameThanAntoherLooseIfStrictMode = _ => {
+				"use strict";
+				function func (){return "function";}
+				{
+					function func() {return "inner bloc function"}
+				};
+				Assert.areEquals(func(), "function");
+			},
+			argumentsDoesNotExistInArrowFunction = _ => {
+				let arrowFunction = _ => {
+					Assert.throwException(_=>arguments);
+				};
+				arrowFunction('something');
+			},
+			argumentsExistInFunction = _ => {
+				let func = function() {
+					Assert.areEquals(arguments[0], 'something');
+				};
+				func('something');
+			}
+		];
+
+		ScopeTestSuite.forEach((test) => {
+			let stateColor = 'color:';
+			let testInformations = test.name;
+			try{
+				test();
+				stateColor+='green';
+			}catch(exception){
+				stateColor+='red';
+				testInformations += '\n\t' + exception
+			}
+			console.log('%c'+testInformations, stateColor);
+		});
+	})({
+		areEquals : (actual, expected) => {
+			if(expected === actual) return;
+			throw 'values are not equals'+
+			'\n\texpected : "' + expected + '"' +
+			'\n\tactual : "' + actual + '"';
+		},
+		exist : (object) => {
+			if(object !== undefined) return;
+			throw 'object should exist';
+		},
+		dontExist : (object) => {
+			if(object === undefined) return;
+			throw 'object should not exist'+
+			'\n\tvalue : '+object;
+		},
+		throwException : (func) => {
+			let everyThingIsOk = true;
+			try{
+				func();
+				everyThingIsOk = false;
+			}catch(e){}
+			if(everyThingIsOk) return;
+			throw 'object should not be accessible';
+		}
+	});
+</script>
