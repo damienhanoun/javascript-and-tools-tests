@@ -1,0 +1,13 @@
+{
+  "name": "angular-test",
+  "version": "1.0.0",
+  "description": "Try to understand angular 1",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Damien Hanoun",
+  "license": "ISC",
+  "devDependencies": {
+    "angular": "^1.6.4"
+  }
+}
