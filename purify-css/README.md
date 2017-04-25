@@ -2,4 +2,4 @@ To run the project, you may need to install gulp in global : `npm install gulp -
 
 Then, you can install dependencies : `npm install`
 
-Finally, you can run the project : `gulp css`
+Finally, you can compile css to remove unsused css : `gulp css`
