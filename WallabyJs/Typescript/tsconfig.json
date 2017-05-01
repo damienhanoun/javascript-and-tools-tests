@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "module":"none"
+  },
+  "include": [
+    "src/**/*.ts",
+    "test/**/*.ts",
+    "node_modules/@types/**/*.d.ts"
+  ]
+}

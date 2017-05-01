@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript">
+		var i = 0;
+		var maxSize = 5;
+		var iterableObject = {
+			[Symbol.iterator]() {
+				return {
+					next : () => {
+						if(i++<maxSize)
+							return {
+								value:i,
+								done:false
+							}
+						return {
+							done:true
+						};
+					}
+				};
+			}
+		};
+
+		console.log([...iterableObject]);
+	</script>
+</head>
+<body>
+
+</body>
+</html>

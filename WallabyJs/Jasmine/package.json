@@ -1,0 +1,10 @@
+{
+  "name": "wallaby-jasmine-example",
+  "version": "1.0.0",
+  "description": "",
+  "author": "Damien Hanoun",
+  "license": "ISC",
+  "devDependencies": {
+    "jasmine": "2.6.0"
+  }
+}

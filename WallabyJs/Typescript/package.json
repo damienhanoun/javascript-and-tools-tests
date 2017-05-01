@@ -1,0 +1,12 @@
+{
+  "name": "wallaby-typescript-example",
+  "version": "1.0.0",
+  "description": "",
+  "author": "Damien Hanoun",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jasmine": "^2.5.47",
+    "jasmine": "2.6.0",
+    "typescript":"2.3.2"
+  }
+}
